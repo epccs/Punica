@@ -2,9 +2,9 @@
 
 ## Overview
 
-This board has an ATmega1284p. It has two Input Capture (ICP1, ICP3) hardware units which each connect to an inverting open collector transistor that will pull down the respective ICP pin when current (e.g. >7mA) is flowing through a 100 Ohm sense resistor. The captured value is accurate to within one crystal (30ppm + drift) count of the pulse edge that caused the event. This captured value may, for example, be an acquisition of a rotating turbine. The board also has four groups of three level shifted l interfaces to the microcontroller input/output pins. Each of the four digital groups has a 22mA current source. There are six analog inputs with controlled current sources. The ATmega1284p can be programmed with the AVR toolchain on Debian, Ubuntu, Raspbian, and others.
+This board has an ATmega1284p. It has two Input Capture (ICP1, ICP3) hardware units which each connect to an inverting open collector transistor that will pull down the respective ICP pin when current (e.g. >7mA) is flowing through a 100 Ohm loop termination resistor. The captured value is accurate to within one crystal (30ppm + drift) count of the pulse edge that caused the event. This captured value may, for example, be an acquisition of a rotating turbine. The board also has nine level shifted digital connections to the microcontroller input/output pins. The digital lines are group into three pluggable connectors that each has a 22mA current source. There are six analog inputs with controlled current sources for a sensor loop. The ATmega1284p can be programmed with the AVR toolchain on Debian, Ubuntu, Raspbian, and others.
 
-Bootloader options include [optiboot] and [xboot]. Uploading through a bootloader eliminates fuse setting errors and there are few settings that can block an upload accidentally (e.g. some bootloaders can get stuck in a watchdog loop). 
+Bootloader options include [optiboot] and [xboot]. Serial bootloaders can't change the hardware fuse setting which reduces programming errors that can accidentally brick the controller. 
 
 [optiboot]: https://github.com/Optiboot/optiboot
 [xboot]: https://github.com/alexforencich/xboot
@@ -12,23 +12,45 @@ Bootloader options include [optiboot] and [xboot]. Uploading through a bootloade
 ## Inputs/Outputs/Functions
 
 ```
-        ATmega1284p microcontroller.
-        Twelve pluggable digital input/output (DIO 2,3,4,5,6,7,9,10,11,12,13,22) with level conversion.
-        Four groups of Digital interfaces each with a 22 mA current source.
-        Two Input Capture (ICP1, ICP3) with current sources for CAT5 pair current loops.
-        Six Analog channels ADC0, ADC1, ADC2, ADC3, ADC4, ADC5.
-        Six 22mA current source CS0, CS1, CS2, CS3, CS4, CS5 for analog loops.
-        Six currrent sources are enabled with digital control DIO 15..19, and 23.
-        Shunt limited diode test circuit with current on ADC7 and voltage on ADC6.
-        MCU power (+5V) is from an SMPS.
+        ATmega1284p programs are compiled with open source tools that run nearly everywhere.
+        Input power can range from 7 to 36V DC
+        High side current sense on input power connected to ADC6.
+        Input power voltage is divided down and connected to ADC7.
+        Nine digital input/output (DIO 2,3,4,9,10,11,12,13,22) with level conversion.
+        Digital IO is grouped in three pluggable interfaces each with a 22 mA current source and ground.
+        Digital 22mA current sources enabled with DIO 7.
+        Two Input Capture (ICP1, ICP3) with current sources for sensor loops.
+        ICP1 and ICP3 17mA current source enabled with DIO 7.
+        ICP1 10mA current source enabled with digital control DIO 6.
+        ICP3 10mA current source enabled with digital control DIO 5.
+        Six Analog channels ADC0, ADC1, ADC2, ADC3, ADC4, ADC5 with current sources for sensor loops.
+        ADC0 22mA current source enabled with DIO 15.
+        ADC1 22mA current source enabled with DIO 16.
+        ADC2 22mA current source enabled with DIO 17.
+        ADC3 22mA current source enabled with DIO 18.
+        ADC4 22mA current source enabled with DIO 19.
+        ADC5 22mA current source enabled with DIO 23. 
+        MCU power (+5V) is converted with an SMPS from the input power.
+        Up to an Amp can be safely used from the +5V.
 ```
 
 ## Uses
 
 ```
-        Microcontroller based test control system.
-        Has hardware for diode testing somewhat like found on DMM's.
-        ICT, e.g. use with a relay matrix to scan the diode test on the test points befor power up.
+        Data Acquisition using Capture Hardware (ICP1, ICP3).
+            Flow Meter(s)
+            Rotating Hardware
+            PWM Output Temperature Sensors
+            PWM Output Capacitance Sensors
+        Automation
+            General purpose IO that is tolerant of the intrinsically reliable current source.
+            The intrinsically reliable* current source will not harm the controller.
+                * The intrinsically reliable current source can fail due to excessive power dissipation.
+            String the intrinsically reliable current through multiple Solid State Relay to control multi-phase power.
+            Power Off the shield VIN which powers a Raspberry Pi Zero on the RPUpi shield.
+        Open Source Toolchain
+            This is programmed with the GCC and an open toolchain.
+            Note the Eagle board files are not available but I am looking at KiCAD.
 ```
 
 ## Notice
@@ -50,12 +72,20 @@ Bootloader options include [optiboot] and [xboot]. Uploading through a bootloade
 
 # Status
 
-![Status](./status_icon.png "TestSys Status")
+![Status](./status_icon.png "Punica Status")
 
 ```
-        ^0  Done: 
-            WIP: Design,
-            Todo: Layout, BOM, Review*, Order Boards, Assembly, Testing, Evaluation.
+        ^1  Done: Design, Layout, 
+            WIP: BOM,
+            Todo: Review*, Order Boards, Assembly, Testing, Evaluation.
+            *during review the Design may change without changing the revision.
+            IO7 controls 3x22mA Digital and 2x17mA ICP
+            IO6 controls 10mA ICP1
+            IO5 controls 10mA ICP3
+
+        ^0  Done: Design, Layout, BOM, Review*, Order Boards,
+            WIP: not going to build this version
+            Todo:  Assembly, Testing, Evaluation.
             *during review the Design may change without changing the revision.
 ```
 
@@ -68,10 +98,10 @@ Setup and methods used for [Evaluation](./Evaluation/)
 
 The board is 0.063 thick, FR4, two layer, 1 oz copper with ENIG (gold) finish.
 
-![Top](./Documents/17187,Top.png "TestSys Top")
-![TAssy](./Documents/17187,TAssy.jpg "TestSys Top Assy")
-![Bottom](./Documents/17187,Bottom.png "TestSys Bottom")
-![BAssy](./Documents/17187,BAssy.jpg "TestSys Bottom Assy")
+![Top](./Documents/17187,Top.png "Punica Top")
+![TAssy](./Documents/17187,TAssy.jpg "Punica Top Assy")
+![Bottom](./Documents/17187,Bottom.png "Punica Bottom")
+![BAssy](./Documents/17187,BAssy.jpg "Punica Bottom Assy")
 
 ## Electrical Parameters (Typical)
 
@@ -87,7 +117,7 @@ DIN rail
 
 ## Electrical Schematic
 
-![Schematic](./Documents/17187,Schematic.png "TestSys Schematic")
+![Schematic](./Documents/17187,Schematic.png "Punica Schematic")
 
 ## Testing
 
@@ -96,7 +126,20 @@ Check correct assembly and function with [Testing](./Testing/)
 
 # Bill of Materials
 
-Import the [BOM](./Design/17187,BOM.csv) into LibreOffice Calc (or Excel), or use a text editor.
+The BOM is a CVS file(s), import it into a spreadsheet program like LibreOffice Calc (or Excel), or use a text editor.
+
+Option | BOM's included
+----- | ----- 
+A. | [BRD] 
+M. | [BRD] [SMD] [HDR] 
+W. | [BRD] [SMD] [HDR] [PLUG]
+Z. | [BRD] [SMD] [HDR] [PLUG] [DIN]
+
+[BRD]: ./Design/17187BRD,BOM.csv
+[SMD]: ./Design/17187SMD,BOM.csv
+[HDR]: ./Design/17187HDR,BOM.csv
+[PLUG]: ./Design/17187PLUG,BOM.csv
+[DIN]: ./Design/17187DIN,BOM.csv
 
 
 # Assembly
