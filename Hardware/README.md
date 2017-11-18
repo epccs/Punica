@@ -2,7 +2,7 @@
 
 ## Overview
 
-This board has an ATmega1284p. It has two Input Capture (ICP1, ICP3) hardware units which each connect to an inverting open collector transistor that will pull down the respective ICP pin when current (e.g. >7mA) is flowing through a 100 Ohm loop termination resistor. The captured value is accurate to within one crystal (30ppm + drift) count of the pulse edge that caused the event. This captured value may, for example, be an acquisition of a rotating turbine. The board also has nine level shifted digital connections to the microcontroller input/output pins. The digital lines are group into three pluggable connectors that each has a 22mA current source. There are six analog inputs with controlled current sources for a sensor loop. The ATmega1284p can be programmed with the AVR toolchain on Debian, Ubuntu, Raspbian, and others.
+This board has an ATmega1284p. It has two Input Capture (ICP1, ICP3) hardware units which each connect to an inverting open collector transistor that will pull down the respective ICP pin when current (e.g. >7mA) is flowing through a 100 Ohm loop termination resistor. The captured value is accurate to within one crystal (30ppm + drift) count of the pulse edge that caused the event. This captured value may, for example, be an acquisition of a rotating turbine. The board also has nine level shifted digital connections to the microcontroller input/output pins. The digital lines are grouped into three connectors that each have a 22mA current source. There are six analog inputs with controlled current sources for a sensor loop. The ATmega1284p can be programmed with the AVR toolchain on Debian, Ubuntu, Raspbian, and others.
 
 Bootloader options include [optiboot] and [xboot]. Serial bootloaders can't change the hardware fuse setting which reduces programming errors that can accidentally brick the controller. 
 
@@ -75,9 +75,9 @@ Bootloader options include [optiboot] and [xboot]. Serial bootloaders can't chan
 ![Status](./status_icon.png "Punica Status")
 
 ```
-        ^1  Done: Design, Layout, 
-            WIP: BOM,
-            Todo: Review*, Order Boards, Assembly, Testing, Evaluation.
+        ^1  Done: Design, Layout, BOM,
+            WIP: Review*,
+            Todo: Order Boards, Assembly, Testing, Evaluation.
             *during review the Design may change without changing the revision.
             IO7 controls 3x22mA Digital and 2x17mA ICP
             IO6 controls 10mA ICP1
