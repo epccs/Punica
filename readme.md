@@ -31,9 +31,9 @@ Hardware files include a schematic, bill of materials, and various notes for tes
 
 ## Example
 
-TBD
+This example shows an RS-422 serial bus that allows multiple microcontroller boards to be connected to a single computer serial port. It has an [RPUpi] shield that allows a Raspberry Pi Zero's hardware UART to connect as a host. The  Pi Zero has WiFi which I use for SSH connections and Samba file sharing. The other controller boards use an [RPUadpt] shield that daisy-chains the RS-422 with CAT5 cables. 
 
-I will use this board with an RS-422 shield so there is no USB interface (e.g. [RPUftdi] has a USB to RS-422 bridge).
+![MultiDrop](./Hardware/Documents/MultiDrop.png "RPUno MultiDrop")
 
 The level shifted DIO allows operation up to the supplied input voltage, so if it is powered with 24V then the DIO inputs can be used with one of the 20mA current sources to provide a 24V output with up to 20mA. This is like the sinking or sourcing that is found in some PLC digital outputs. The connection is also an input as well, it is like an I2C line that is pulled up by a 20mA source and can be pulled down by any connected device and those connected devices can read the state. There are limitations, I have added a 127 Ohm resistor between the level shifting N-channel MOSFET and the microcontroller pin to limit the current bellow 40mA (which is still too high for a long life, it needs to be limited to 20mA to expect it to work for more than a few years). The protection resistor means that the line voltage will pull down to about 2.54V.  Using a 10k Ohm pull up to the 20mA current source allows sharing it with several DIO which can then pull that down to 0.3V. 
 
